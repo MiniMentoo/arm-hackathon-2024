@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { ActionData } from "./$types";
 
-    let stockMarketBroDetected: boolean;
-    $: stockMarketBroDetected = false;
+    let companySelectorBlocked: boolean;
+    $: companySelectorBlocked = false;
     let companySelectorPlaceholder: string;
     $: companySelectorPlaceholder = "What company did you buy from?";
 
@@ -20,9 +20,9 @@
     <form method="POST">
         <input type="number" name="stockValue" placeholder="How much did you spend? (USD$)" />
         <input type="date" name="dateBought" />
-        <input type="text" disabled={stockMarketBroDetected} placeholder={companySelectorPlaceholder} on:click={() => {
-            if (!stockMarketBroDetected) {
-                stockMarketBroDetected = true;
+        <input type="text" disabled={companySelectorBlocked} placeholder={companySelectorPlaceholder} on:click={() => {
+            if (!companySelectorBlocked) {
+                companySelectorBlocked = true;
                 companySelectorPlaceholder += "(Jk we don't care)"
             }
         }} />
@@ -48,6 +48,3 @@
         <p>Error: {form.error}</p>
     </article>
 {/if}
-
-<style>
-</style>
