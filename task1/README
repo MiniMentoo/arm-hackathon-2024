@@ -1,1 +1,5 @@
+# Task 1: Directory reconstruction
 
+Run with `cargo run --release`. Takes input through stdin.
+
+E.g `cargo run --release < input.txt`
