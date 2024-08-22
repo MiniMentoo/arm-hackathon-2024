@@ -26,8 +26,9 @@ export const actions: Actions = {
 		}
 
 		const numberOfStocksBought = Math.floor(parseFloat(String(stockValue)) / ogPrice);
+		const moneyActuallySpent = numberOfStocksBought * ogPrice;
 		const revenue = numberOfStocksBought * price;
-		const profit = revenue - parseFloat(String(stockValue));
+		const profit = revenue - moneyActuallySpent;
 
 		return {
 			profit,

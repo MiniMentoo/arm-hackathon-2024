@@ -18,7 +18,6 @@
 <div data-theme={darkModeData()} class={darkModeData()}>
 
     <header>
-        <!-- TODO dark mode toggle and theme selector -->
          <button on:click={() => {
             darkMode = !darkMode
          }}>Toggle Dark/Light</button>
