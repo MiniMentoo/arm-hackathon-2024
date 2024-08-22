@@ -16,13 +16,25 @@ export const actions: Actions = {
 		// CALCULATE STOCK DATA
 		const { symbol, name } = await getRandomNasdaqCompany();
 		const price = await getPrice(symbol);
+		const { price: ogPrice, error } = await getOldPrice(symbol, dateBought.toString());
+
+		if (error) {
+			return {
+				success: false,
+				error
+			};
+		}
+
+		const numberOfStocksBought = Math.floor(parseFloat(String(stockValue)) / ogPrice);
+		const profit = numberOfStocksBought * price;
 
 		return {
+			profit,
+			numberOfStocksBought,
+			ogPrice,
 			price,
 			symbol,
 			name,
-			apiKey: env.TWELVEDATA_API_KEY,
-			stockValue,
 			dateBought,
 			success: true
 		};
@@ -41,6 +53,18 @@ const getAuthedTwelvedataUrl = (path: string, params: { [key: string]: string } 
 	return new URL(`${twelveDataUrl}${path}?${queryParams}`);
 };
 
+const marketStackUrl = 'https://api.marketstack.com/v1';
+
+const getAuthedMarketStackUrl = (path: string, params: { [key: string]: string } = {}) => {
+	const access_key = env.MARKETSTACK_API_KEY;
+	const queryParams = new URLSearchParams({
+		...params,
+		access_key
+	});
+	console.log(`${marketStackUrl}${path}?${queryParams}`);
+	return new URL(`${marketStackUrl}${path}?${queryParams}`);
+};
+
 const getRandomNasdaqCompany = async () => {
 	const res = await fetch(
 		getAuthedTwelvedataUrl('/stocks', {
@@ -49,7 +73,7 @@ const getRandomNasdaqCompany = async () => {
 		})
 	);
 	const { data, count } = await res.json();
-	const index = Math.random() * count;
+	const index = Math.floor(Math.random() * count);
 	return {
 		symbol: data[0].symbol,
 		name: data[0].name
@@ -58,11 +82,35 @@ const getRandomNasdaqCompany = async () => {
 
 const getPrice = async (symbol: string): Promise<number> => {
 	const res = await fetch(
-		getAuthedTwelvedataUrl('/price', {
-			source: 'docs',
-			symbol
+		getAuthedMarketStackUrl('/eod/latest', {
+			symbols: symbol
 		})
 	);
-	const { price } = await res.json();
-	return parseFloat(price);
+	console.log(res.status);
+	const { data } = await res.json();
+	console.log(data);
+	return parseFloat(data[0].close);
+};
+
+// Returns -1 if no price was found.
+const getOldPrice = async (
+	symbol: string,
+	date: string
+): Promise<{ price: number; error?: string }> => {
+	const res = await fetch(
+		getAuthedMarketStackUrl(`/eod/${date}`, {
+			symbols: symbol
+		})
+	);
+	console.log(res.status);
+	const { data } = await res.json();
+	if (data.length == 0) {
+		return {
+			price: -1,
+			error: `Stock value not found for ${symbol} on date ${date}. Womp womp, try again.`
+		};
+	}
+	return {
+		price: parseFloat(data[0].close)
+	};
 };
