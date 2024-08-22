@@ -1,18 +1,8 @@
-# create-svelte
+# Stock Gain/Loss Calculator
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+Uses the twelvedata stock market API ([docs](https://twelvedata.com/docs#getting-started)).
 
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+- In your `.env` file, add `TWELVEDATA_API_KEY`.
 
 ## Developing
 
