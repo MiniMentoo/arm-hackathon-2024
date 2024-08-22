@@ -26,7 +26,8 @@ export const actions: Actions = {
 		}
 
 		const numberOfStocksBought = Math.floor(parseFloat(String(stockValue)) / ogPrice);
-		const profit = numberOfStocksBought * price;
+		const revenue = numberOfStocksBought * price;
+		const profit = revenue - parseFloat(String(stockValue));
 
 		return {
 			profit,
@@ -75,8 +76,8 @@ const getRandomNasdaqCompany = async () => {
 	const { data, count } = await res.json();
 	const index = Math.floor(Math.random() * count);
 	return {
-		symbol: data[0].symbol,
-		name: data[0].name
+		symbol: data[index].symbol,
+		name: data[index].name
 	};
 };
 

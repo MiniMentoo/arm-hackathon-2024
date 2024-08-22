@@ -43,7 +43,7 @@
     }
 
     main {
-        height: 100vh;
+        height: 150vh;
         padding: 1rem;
     }
     .dark > main {
